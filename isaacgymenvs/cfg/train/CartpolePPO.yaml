@@ -24,7 +24,7 @@ params:
     mlp:
       units: [32, 32]
       activation: elu
-      
+
       initializer:
         name: default
       regularizer:

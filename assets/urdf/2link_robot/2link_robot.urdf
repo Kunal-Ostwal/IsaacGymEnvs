@@ -1,0 +1,108 @@
+<robot name="2link_robot">
+
+    <!-- Materials -->
+    <material name="black">
+        <color rgba="0 0 0 0.7"/>
+    </material>
+    <material name="white">
+        <color rgba="1 1 1 0.7"/>
+    </material>
+
+    <!-- Base Link -->
+    <link name="base">
+        <!-- Optional: Add visual, collision, and inertial elements if needed -->
+    </link>
+
+    <!-- Arm1 Link -->
+    <link name="arm1">
+        <visual>
+            <origin rpy="0 0 0" xyz="0.5 0 0"/>
+            <geometry>
+                <box size="1 0.05 0.05"/>
+            </geometry>
+            <material name="black"/>
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0.5 0 0"/>
+            <geometry>
+                <box size="1 0.05 0.05"/>
+            </geometry>
+        </collision>
+        <!-- Inertial Properties -->
+        <inertial>
+            <origin xyz="0.5 0 0" rpy="0 0 0"/>
+            <mass value="1.0"/>
+            <inertia ixx="0.0041667" ixy="0.0" ixz="0.0" iyy="0.00010417" iyz="0.0" izz="0.00010417"/>
+        </inertial>
+    </link>
+
+    <!-- Base Hinge Joint -->
+    <joint name="baseHinge" type="continuous">
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <parent link="base"/>
+        <child link="arm1"/>
+        <axis xyz="0 0 1"/>
+    </joint>
+
+    <!-- Arm2 Link -->
+    <link name="arm2">
+        <visual>
+            <origin rpy="0 0 0" xyz="0.5 0 0"/>
+            <geometry>
+                <box size="1 0.05 0.05"/>
+            </geometry>
+            <material name="black"/>
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0.5 0 0"/>
+            <geometry>
+                <box size="1 0.05 0.05"/>
+            </geometry>
+        </collision>
+        <!-- Inertial Properties -->
+        <inertial>
+            <origin xyz="0.5 0 0" rpy="0 0 0"/>
+            <mass value="1.0"/>
+            <inertia ixx="0.0041667" ixy="0.0" ixz="0.0" iyy="0.00010417" iyz="0.0" izz="0.00010417"/>
+        </inertial>
+    </link>
+
+    <!-- Inter Arm Joint -->
+    <joint name="interArm" type="continuous">
+        <origin xyz="1 0 0" rpy="0 0 0"/>
+        <parent link="arm1"/>
+        <child link="arm2"/>
+        <axis xyz="0 0 1"/>
+    </joint>
+
+    <!-- End Effector Link -->
+    <link name="endEffector">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <sphere radius="0.05"/>
+            </geometry>
+            <material name="white"/>
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <sphere radius="0.05"/>
+            </geometry>
+        </collision>
+        <!-- Inertial Properties -->
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="0.1"/>
+            <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
+        </inertial>
+    </link>
+
+    <!-- End Effector Joint -->
+    <joint name="ee_joint" type="fixed">
+        <origin xyz="1 0 0" rpy="0 0 0"/>
+        <parent link="arm2"/>
+        <child link="endEffector"/>
+    </joint>
+
+</robot>

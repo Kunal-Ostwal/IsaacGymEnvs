@@ -31,7 +31,7 @@ env:
   asset:
     assetRoot: "../../assets"
     assetFileNameFranka: "urdf/franka_description/robots/franka_panda.urdf"
-    assetFileNameCabinet: "urdf/sektion_cabinet_model/urdf/sektion_cabinet_2.urdf"
+    assetFileNameCabinet: "urdf/sektion_cabinet_model/urdf/sektion_cabinet.urdf"
 
   # set to True if you use camera sensors in the environment
   enableCameraSensors: False

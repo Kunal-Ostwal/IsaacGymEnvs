@@ -30,14 +30,42 @@ from .ant import Ant
 from .anymal import Anymal
 from .anymal_terrain import AnymalTerrain
 from .ball_balance import BallBalance
+
 from .cartpole import Cartpole 
+from .cartpole_curriculum import CartpoleCurriculum
+
 from .factory.factory_task_gears import FactoryTaskGears
 from .factory.factory_task_insertion import FactoryTaskInsertion
 from .factory.factory_task_nut_bolt_pick import FactoryTaskNutBoltPick
 from .factory.factory_task_nut_bolt_place import FactoryTaskNutBoltPlace
 from .factory.factory_task_nut_bolt_screw import FactoryTaskNutBoltScrew
+
 from .franka_cabinet import FrankaCabinet
-from .franka_cube_stack import FrankaCubeStack
+# from .franka_cabinet_no_props import FrankaCabinetNoProps               # [Kunal] Added this task
+# from .franka_cabinet_only_reach import FrankaCabinetOnlyReach           # [Kunal] Added this task
+# from .franka_cabinet_add_box import FrankaCabinetAddBox                 # [Kunal] Added this task
+# from .franka_cabinet_add_cylinder import FrankaCabinetAddCylinder       # [Kunal] Added this task
+# from .franka_cabinet_reward_design import FrankaCabinetRewardDesign     # [Kunal] Added this task
+# from .franka_cabinet_remove_cabinet_NOT_WORKING import FrankaCabinetRemoveCabinet   # [Kunal] Added this task
+# from .franka_cabinet_change_target import FrankaCabinetChangeTarget     # [Kunal] Added this task
+# from .franka_reach import FrankaReach                                   # [Kunal] Added this task
+from .franka_reach_sphere import FrankaReachSphere                      # [Kunal] Changes cylinder to sphere
+from .franka_reach_sphere_box_easy import FrankaReachSphereBoxEasy      # [Kunal] Easy task for curriculum learning - Box size: 100%
+# from .franka_reach_sphere_box_medium import FrankaReachSphereBoxMedium  # [Kunal] Medium task for curriculum learning - Box size: 80%
+# from .franka_reach_sphere_box_hard import FrankaReachSphereBoxHard      # [Kunal] Hard task for curriculum learning - Box size: 60%
+# from .franka_reach_sphere_box_expert import FrankaReachSphereBoxExpert  # [Kunal] Hard task for curriculum learning - Box size: 40%
+from .franka_reach_sphere_box_sequence import FrankaReachSphereBoxSequence  # [Kunal] Sequence task for curriculum learning - Box size: 100% to 10%
+
+# from .franka_reach_sphere_base import FrankaReachSphereBase             # [Kunal] Base sphere task - Box size: 10%
+# from .franka_cube_stack import FrankaCubeStack
+# from .franka_reach_sphere_with_cubestack import FrankaReachSphereWithCubestack  # [Kunal] Reaches sphere with Cube Stacking as base task
+
+# from .xarm_reach_sphere import XArmReachSphere                          # [Kunal] Changed Franka to XArm
+
+from .two_link_box_reacher import TwoLinkBoxReacher                 # [Kunal] Two Link Robot with Sphere and Box task
+from .two_link_box_random_reacher import TwoLinkBoxRandomReacher
+from .kinova_box_reacher import KinovaBoxReacher
+
 from .humanoid import Humanoid
 from .humanoid_amp import HumanoidAMP
 from .ingenuity import Ingenuity
@@ -95,7 +123,10 @@ isaacgym_task_map = {
     "Anymal": Anymal,
     "AnymalTerrain": AnymalTerrain,
     "BallBalance": BallBalance,
+
     "Cartpole": Cartpole,
+    "CartpoleCurriculum": CartpoleCurriculum,                   # [Kunal] Adds stiffness based curriculum
+
     "FactoryTaskGears": FactoryTaskGears,
     "FactoryTaskInsertion": FactoryTaskInsertion,
     "FactoryTaskNutBoltPick": FactoryTaskNutBoltPick,
@@ -103,8 +134,32 @@ isaacgym_task_map = {
     "FactoryTaskNutBoltScrew": FactoryTaskNutBoltScrew,
     "IndustRealTaskPegsInsert": IndustRealTaskPegsInsert,
     "IndustRealTaskGearsInsert": IndustRealTaskGearsInsert,
+
     "FrankaCabinet": FrankaCabinet,
-    "FrankaCubeStack": FrankaCubeStack,
+   # "FrankaCabinetNoProps": FrankaCabinetNoProps,                # [Kunal] Added this task
+   #  "FrankaCabinetOnlyReach": FrankaCabinetOnlyReach,           # [Kunal] Added this task
+   #  "FrankaCabinetAddBox": FrankaCabinetAddBox,                 # [Kunal] Added this task
+   #  "FrankaCabinetAddCylinder": FrankaCabinetAddCylinder,       # [Kunal] Added this task
+#     "FrankaCabinetRewardDesign": FrankaCabinetRewardDesign,     # [Kunal] Added this task
+#     "FrankaCabinetChangeTarget": FrankaCabinetChangeTarget,     # [Kunal] Added this task
+#     "FrankaReach": FrankaReach,                                 # [Kunal] Added this task
+    "FrankaReachSphere": FrankaReachSphere,                     # [Kunal] Changes cylinder to sphere
+    "FrankaReachSphereBoxEasy": FrankaReachSphereBoxEasy,       # [Kunal] Easy task for curriculum learning - Box size: 100%
+#     "FrankaReachSphereBoxMedium": FrankaReachSphereBoxMedium,   # [Kunal] Medium task for curriculum learning - Box size: 80%
+#     "FrankaReachSphereBoxHard": FrankaReachSphereBoxHard,       # [Kunal] Hard task for curriculum learning - Box size: 60%
+#     "FrankaReachSphereBoxExpert": FrankaReachSphereBoxExpert,   # [Kunal] Expert task for curriculum learning - Box size: 40%
+#     "FrankaReachSphereBase": FrankaReachSphereBase,             # [Kunal] Base sphere task - Box size: 10%
+    "FrankaReachSphereBoxSequence": FrankaReachSphereBoxSequence,   # [Kunal] Sequence task for curriculum learning - Box size: 100% to 10%
+
+#     "FrankaCubeStack": FrankaCubeStack,
+#     "FrankaReachSphereWithCubestack": FrankaReachSphereWithCubestack,  # [Kunal] Reaches sphere with Cube Stacking as base task
+
+#     "XArmReachSphere": XArmReachSphere,                         # [Kunal] Changed Franka to XArm
+
+    "TwoLinkBoxReacher": TwoLinkBoxReacher,                 # [Kunal] Two Link Robot with Sphere and Box task
+    "TwoLinkBoxRandomReacher": TwoLinkBoxRandomReacher,    # [Kunal] Random Two Link Robot with Sphere and Box task
+    "KinovaBoxReacher": KinovaBoxReacher,                   # [Kunal] Kinova Robot with Sphere and Box task
+
     "Humanoid": Humanoid,
     "HumanoidAMP": HumanoidAMP,
     "Ingenuity": Ingenuity,

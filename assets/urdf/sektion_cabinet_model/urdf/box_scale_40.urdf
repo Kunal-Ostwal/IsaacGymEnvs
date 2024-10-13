@@ -1,0 +1,139 @@
+<robot name="hollow_box_with_top_cover">
+
+  <link name="base_panel">
+    <visual>
+      <geometry>
+        <box size="1.08 1.08 0.027" />
+      </geometry>
+      <material name="yellow">
+        <color rgba="1 1 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="1.08 1.08 0.027" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0" />
+      <origin xyz="0 0 0.025" rpy="0 0 0" />
+      <inertia ixx="0.0833333" ixy="0" ixz="0" iyy="0.0833333" iyz="0" izz="0.0833333" />
+    </inertial>
+  </link>
+
+
+  <link name="back_panel">
+    <visual>
+      <geometry>
+        <box size="1.08 0.027 1.08" />
+      </geometry>
+    <material name="yellow">
+      <color rgba="1 1 0 1" />
+    </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="1.08 0.027 1.08" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0" />
+      <origin xyz="0 1.025 1.0" rpy="0 0 0" />
+      <inertia ixx="0.0833333" ixy="0" ixz="0" iyy="0.0833333" iyz="0" izz="0.0833333" />
+    </inertial>
+  </link>
+
+
+  <link name="left_panel">
+    <visual>
+      <geometry>
+        <box size="0.027 1.08 1.08" />
+      </geometry>
+    <material name="purple">
+      <color rgba="1 1 0 1" />
+    </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.027 1.08 1.08" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0" />
+      <origin xyz="-1.0025 0 1.0" rpy="0 0 0" />
+      <inertia ixx="0.0833333" ixy="0" ixz="0" iyy="0.0833333" iyz="0" izz="0.0833333" />
+    </inertial>
+  </link>
+
+
+  <link name="right_panel">
+    <visual>
+      <geometry>
+        <box size="1.08 0.027 1.107" />
+      </geometry>
+    <material name="orange">
+      <color rgba="1 1 0 1" />
+    </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="1.08 0.027 1.107" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0" />
+      <origin xyz="1.0025 0 1.0" rpy="0 0 0" />
+      <inertia ixx="0.0833333" ixy="0" ixz="0" iyy="0.0833333" iyz="0" izz="0.0833333" />
+    </inertial>
+  </link>
+
+
+  <link name="top_panel">
+    <visual>
+      <geometry>
+        <box size="1.08 1.08 0.027" />
+      </geometry>
+    <material name="blue">
+      <color rgba="1 1 0 1" />
+    </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="1.08 1.08 0.027" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0" />
+      <origin xyz="0 0 2.025" rpy="0 0 0" />
+      <inertia ixx="0.0833333" ixy="0" ixz="0" iyy="0.0833333" iyz="0" izz="0.0833333" />
+    </inertial>
+  </link>
+
+
+  <joint name="back_joint" type="fixed">
+    <parent link="base_panel" />
+    <child link="back_panel" />
+    <origin xyz="0.0 0.554 0.54" rpy="0 0 0" />
+  </joint>
+
+  <joint name="left_joint" type="fixed">
+    <parent link="base_panel" />
+    <child link="left_panel" />
+    <origin xyz="0.541 0.0 0.54" rpy="0 0 0" />
+  </joint>
+
+  <joint name="right_joint" type="fixed">
+    <parent link="base_panel" />
+    <child link="right_panel" />
+    <origin xyz="0.0 -0.54 0.54" rpy="0 0 0" />
+  </joint>
+
+
+  <joint name="top_joint" type="fixed">
+    <parent link="base_panel" />
+    <child link="top_panel" />
+    <origin xyz="0.0 0.0 1.094" rpy="0 0 0" />
+  </joint>
+
+
+</robot>

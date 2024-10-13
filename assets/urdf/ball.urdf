@@ -4,17 +4,20 @@
     <visual>
       <origin xyz="0 0 0"/>
       <geometry>
-        <sphere radius="0.2"/>
+        <sphere radius="0.02"/>
       </geometry>
+      <material name="Blue">
+        <color rgba="0.28 0.52 0.92 1.0"/>
+      </material>
     </visual>
     <collision>
       <origin xyz="0 0 0"/>
       <geometry>
-        <sphere radius="0.2"/>
+        <sphere radius="0.02"/>
       </geometry>
     </collision>
     <inertial>
-      <mass value="0.5"/>
+      <mass value="0.1"/>
       <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
     </inertial>
   </link>

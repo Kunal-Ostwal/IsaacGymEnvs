@@ -1,30 +1,4 @@
-# Copyright (c) 2018-2023, NVIDIA Corporation
-# All rights reserved.
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# 1. Redistributions of source code must retain the above copyright notice, this
-#    list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-#    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its
-#    contributors may be used to endorse or promote products derived from
-#    this software without specific prior written permission.
-#
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 
 import numpy as np
 import os
@@ -47,6 +21,9 @@ class Cartpole(VecTask):
         self.cfg["env"]["numActions"] = 1
 
         super().__init__(config=self.cfg, rl_device=rl_device, sim_device=sim_device, graphics_device_id=graphics_device_id, headless=headless, virtual_screen_capture=virtual_screen_capture, force_render=force_render)
+
+        # [Kunal] - Curriculum & BO variables
+
 
         dof_state_tensor = self.gym.acquire_dof_state_tensor(self.sim)
         self.dof_state = gymtorch.wrap_tensor(dof_state_tensor)
@@ -73,20 +50,22 @@ class Cartpole(VecTask):
         upper = gymapi.Vec3(0.5 * spacing, spacing, spacing)
 
         asset_root = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../assets")
-        asset_file = "urdf/cartpole.urdf"
+        cartpole1_file = "urdf/cartpoles/cartpole450.urdf"
 
         if "asset" in self.cfg["env"]:
             asset_root = os.path.join(os.path.dirname(os.path.abspath(__file__)), self.cfg["env"]["asset"].get("assetRoot", asset_root))
-            asset_file = self.cfg["env"]["asset"].get("assetFileName", asset_file)
+            cartpole1_file = self.cfg["env"]["asset"].get("cartpole1FileName", cartpole1_file)
 
-        asset_path = os.path.join(asset_root, asset_file)
-        asset_root = os.path.dirname(asset_path)
-        asset_file = os.path.basename(asset_path)
+        cartpole1_path = os.path.join(asset_root, cartpole1_file)
+        cartpole1_root = os.path.dirname(cartpole1_path)
+        cartpole1_file = os.path.basename(cartpole1_path)
 
         asset_options = gymapi.AssetOptions()
         asset_options.fix_base_link = True
-        cartpole_asset = self.gym.load_asset(self.sim, asset_root, asset_file, asset_options)
-        self.num_dof = self.gym.get_asset_dof_count(cartpole_asset)
+        print(f"Density of asset: {asset_options.density}")
+        self.cartpole1_asset = self.gym.load_asset(self.sim, cartpole1_root, cartpole1_file, asset_options)
+
+        self.num_dof = self.gym.get_asset_dof_count(self.cartpole1_asset)
 
         pose = gymapi.Transform()
         if self.up_axis == 'z':
@@ -99,12 +78,13 @@ class Cartpole(VecTask):
 
         self.cartpole_handles = []
         self.envs = []
+        self.poles = []
         for i in range(self.num_envs):
             # create env instance
             env_ptr = self.gym.create_env(
                 self.sim, lower, upper, num_per_row
             )
-            cartpole_handle = self.gym.create_actor(env_ptr, cartpole_asset, pose, "cartpole", i, 1, 0)
+            cartpole_handle = self.gym.create_actor(env_ptr, self.cartpole1_asset, pose, "cartpole", i, 1, 0)
 
             dof_props = self.gym.get_actor_dof_properties(env_ptr, cartpole_handle)
             dof_props['driveMode'][0] = gymapi.DOF_MODE_EFFORT
@@ -115,6 +95,24 @@ class Cartpole(VecTask):
 
             self.envs.append(env_ptr)
             self.cartpole_handles.append(cartpole_handle)
+
+            pole_handle = self.gym.find_actor_rigid_body_handle(env_ptr, cartpole_handle, "pole")
+            self.poles.append(pole_handle)
+
+
+    def change_curriculum_step(self, curriculum_step):
+        self.curriculum_step = curriculum_step
+
+        for i in range(self.num_envs):
+            # change the asset options on the cartpole
+            env_ptr = self.envs[i]
+            cartpole_handle = self.cartpole_handles[i]
+
+            dof_props = self.gym.get_actor_dof_properties(env_ptr, cartpole_handle)
+            dof_props['stiffness'][:] = self.curr_joint_stiffness
+
+            self.gym.set_actor_dof_properties(env_ptr, cartpole_handle, dof_props)
+
 
     def compute_reward(self):
         # retrieve environment observations from buffer
@@ -127,6 +125,7 @@ class Cartpole(VecTask):
             pole_angle, pole_vel, cart_vel, cart_pos,
             self.reset_dist, self.reset_buf, self.progress_buf, self.max_episode_length
         )
+
 
     def compute_observations(self, env_ids=None):
         if env_ids is None:
